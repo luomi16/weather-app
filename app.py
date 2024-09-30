@@ -73,7 +73,7 @@ def detailed_weather():
     weather_url = f"https://api.tomorrow.io/v4/timelines?location={lat},{lon}&fields=temperature,temperatureApparent,temperatureMin,temperatureMax,windSpeed,windDirection,humidity,pressureSeaLevel,uvIndex,weatherCode,precipitationProbability,precipitationType,sunriseTime,sunsetTime,visibility,moonPhase,cloudCover&timesteps=current,1d&units=imperial&apikey={TOMORROW_API_KEY}"
     weather_response = requests.get(weather_url).json()
 
-    print(weather_response)
+    print("weather_response for detailed_weather", weather_response)
 
     return jsonify(weather_response)
 

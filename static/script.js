@@ -256,11 +256,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const tableContainer = document.createElement("div");
     tableContainer.className = "weather-table-container";
 
-    // 创建表格的 HTML 结构
     const table = document.createElement("table");
     table.className = "weather-table";
 
-    // 表头部分
     table.innerHTML = `
         <thead>
             <tr>
@@ -324,6 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function fetchAndDisplayDailyDetails(dayData) {
+    console.log("dayData", dayData)
     const lat = 34.0223519;
     const lon = -118.285117;
     // const lat = dayData.latitude;
@@ -343,8 +342,8 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("data", data);
     console.log("startTime", startTime);
 
-    const weatherDetails = data.timelines[0].intervals[0].values;
-    console.log(weatherDetails);
+    const weatherDetails = data.data.timelines[0].intervals[0].values;
+    console.log("weatherDetails", weatherDetails);
 
     const date = new Date(startTime).toLocaleDateString("en-US", {
       weekday: "long",
