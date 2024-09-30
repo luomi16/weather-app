@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const useCurrentLocationCheckbox = document.getElementById("auto-detect");
 
   const resultsContainer = document.getElementById("results-container");
+  const detailsContainer = document.getElementById(
+    "detailed-weather-container"
+  );
 
   const weatherCodeMapping = {
     1000: {
@@ -101,15 +104,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function displayResults(data) {
-    console.log("Displaying results for:", data);
+    // console.log("Displaying results for:", data);
 
     if (!data || !data.data || !data.data.timelines) {
       resultsContainer.innerHTML =
-        "<p>Error: Invalid data received from the server.</p>";
+        "<p>Error: You input invalid data.</p>";
       return;
     }
 
-    // resultsContainer.innerHTML = '';
+    resultsContainer.innerHTML = '';
 
     const currentTimeline = data.data.timelines.find(
       (timeline) => timeline.timestep === "current"
@@ -131,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const lat = data.latitude;
     const lon = data.longitude;
-    console.log(lat, lon)
 
     if (dailyTimeline && dailyTimeline.intervals.length > 0) {
       createDailyWeatherTable(lat, lon, dailyTimeline.intervals);
@@ -140,28 +142,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "<p>Daily weather data is not available.</p>";
     }
 
-    const chartsContainer = document.createElement("div");
-    chartsContainer.className = "weather-charts";
-    chartsContainer.innerHTML = `
-        <button id="toggle-charts">▼ Show Weather Charts</button>
-        <div id="charts-container" style="display: none;">
-            <div id="temperature-chart"></div>
-            <div id="hourly-chart"></div>
-        </div>
-    `;
-    resultsContainer.appendChild(chartsContainer);
+    const chartsContainer = createChartsContainer();
+    detailsContainer.appendChild(chartsContainer);
 
-    const toggleButton = document.getElementById("toggle-charts");
-    const chartsDiv = document.getElementById("charts-container");
-    toggleButton.addEventListener("click", () => {
-      if (chartsDiv.style.display === "none") {
-        chartsDiv.style.display = "block";
-        toggleButton.textContent = "▲ Weather Charts";
-      } else {
-        chartsDiv.style.display = "none";
-        toggleButton.textContent = "▼ Weather Charts";
-      }
-    });
+    initializeToggleCharts(chartsContainer);
 
     initializeCharts(data);
   }
@@ -301,9 +285,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         <tr>
                             <td class="clickable-date" data-index="${index}">${date}</td>
                             <td class="clickable-date" data-index="${index}">${weatherIcon}</td>
-                            <td class="clickable-date" data-index="${index}">${day.values.temperatureMax.toFixed(2)}</td>
-                            <td class="clickable-date" data-index="${index}">${day.values.temperatureMin.toFixed(2)}</td>
-                            <td class="clickable-date" data-index="${index}">${day.values.windSpeed.toFixed(2)}</td>
+                            <td class="clickable-date" data-index="${index}">${day.values.temperatureMax.toFixed(
+                  2
+                )}</td>
+                            <td class="clickable-date" data-index="${index}">${day.values.temperatureMin.toFixed(
+                  2
+                )}</td>
+                            <td class="clickable-date" data-index="${index}">${day.values.windSpeed.toFixed(
+                  2
+                )}</td>
                         </tr>
                     `;
               })
@@ -340,12 +330,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function formatTime(isoString) {
     if (!isoString) return "N/A";
-  
+
     const date = new Date(isoString);
     return date.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "numeric",
-      hour12: true
+      hour12: true,
     });
   }
 
@@ -371,11 +361,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sunriseTimeFormatted = formatTime(weatherDetails.sunriseTime);
     const sunsetTimeFormatted = formatTime(weatherDetails.sunsetTime);
-
-    const detailsContainer = document.getElementById(
-      "detailed-weather-container"
-    );
-    // const detailsContainer = document.getElementById("results-container");
 
     detailsContainer.innerHTML = `
         <div class="detailed-daily-weather-card">
@@ -404,6 +389,34 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         </div>
     `;
+  }
+
+  function initializeToggleCharts(chartsContainer) {
+    const toggleButton = chartsContainer.querySelector("#toggle-charts");
+    const chartsDiv = chartsContainer.querySelector("#charts-container");
+
+    toggleButton.addEventListener("click", () => {
+      if (chartsDiv.style.display === "none") {
+        chartsDiv.style.display = "block";
+        toggleButton.textContent = "▲ Weather Charts";
+      } else {
+        chartsDiv.style.display = "none";
+        toggleButton.textContent = "▼ Weather Charts";
+      }
+    });
+  }
+
+  function createChartsContainer() {
+    const chartsContainer = document.createElement("div");
+    chartsContainer.className = "weather-charts";
+    chartsContainer.innerHTML = `
+        <button id="toggle-charts">▼ Weather Charts</button>
+        <div id="charts-container" style="display: none;">
+            <div id="temperature-chart"></div>
+            <div id="hourly-chart"></div>
+        </div>
+    `;
+    return chartsContainer;
   }
 
   function initializeCharts(data) {
