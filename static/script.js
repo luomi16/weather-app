@@ -142,12 +142,12 @@ document.addEventListener("DOMContentLoaded", () => {
         "<p>Daily weather data is not available.</p>";
     }
 
-    const chartsContainer = createChartsContainer();
-    detailsContainer.appendChild(chartsContainer);
+    // const chartsContainer = createChartsContainer();
+    // detailsContainer.appendChild(chartsContainer);
 
-    initializeToggleCharts(chartsContainer);
+    // initializeToggleCharts(chartsContainer);
 
-    initializeCharts(data);
+    // initializeCharts(data);
   }
 
   function getWeatherDescriptionAndIcon(weatherCode) {
@@ -322,6 +322,12 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((data) => {
         displayDailyWeatherDetails(data, dayData.startTime);
+        const chartsContainer = createChartsContainer();
+        detailsContainer.appendChild(chartsContainer);
+    
+        initializeToggleCharts(chartsContainer);
+    
+        initializeCharts(data);
       })
       .catch((error) => {
         console.error("Error fetching daily weather details:", error);
