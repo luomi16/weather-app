@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("search-form");
   const clearButton = document.getElementById("clear-button");
-  const useCurrentLocationCheckbox = document.getElementById(
-    "use-current-location"
-  );
+
+  const useCurrentLocationCheckbox = document.getElementById("auto-detect");
+
   const resultsContainer = document.getElementById("results-container");
 
   const weatherCodeMapping = {
@@ -61,6 +61,15 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const formData = new FormData(form);
     const searchData = Object.fromEntries(formData);
+
+    if (useCurrentLocationCheckbox.checked) {
+      searchData.use_current_location = true;
+      delete searchData.street;
+      delete searchData.city;
+      delete searchData.state;
+    } else {
+      searchData.use_current_location = false;
+    }
 
     try {
       const response = await fetch("/search", {
@@ -244,12 +253,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createDailyWeatherTable(dailyData) {
-    const tableContainer = document.createElement('div');
-    tableContainer.className = 'weather-table-container';
+    const tableContainer = document.createElement("div");
+    tableContainer.className = "weather-table-container";
 
     // 创建表格的 HTML 结构
-    const table = document.createElement('table');
-    table.className = 'weather-table';
+    const table = document.createElement("table");
+    table.className = "weather-table";
 
     // 表头部分
     table.innerHTML = `
@@ -264,24 +273,29 @@ document.addEventListener("DOMContentLoaded", () => {
         </thead>
         <tbody>
             ${dailyData
-                .map((day, index) => {
-                    const date = new Date(day.startTime).toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric'
-                    });
+              .map((day, index) => {
+                const date = new Date(day.startTime).toLocaleDateString(
+                  "en-US",
+                  {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }
+                );
 
-                    const { description, iconUrl } = getWeatherDescriptionAndIcon(day.values.weatherCode);
+                const { description, iconUrl } = getWeatherDescriptionAndIcon(
+                  day.values.weatherCode
+                );
 
-                    const weatherIcon = `
+                const weatherIcon = `
                         <div class="weather-status">
                             <img class="weather-icon" src="${iconUrl}" alt="${description}">
                             <p>${description}</p>
                         </div>
                     `;
 
-                    return `
+                return `
                         <tr>
                             <td class="clickable-date" data-index="${index}">${date}</td>
                             <td>${weatherIcon}</td>
@@ -290,29 +304,28 @@ document.addEventListener("DOMContentLoaded", () => {
                             <td>${day.values.windSpeed.toFixed(2)}</td>
                         </tr>
                     `;
-                })
-                .join('')}
+              })
+              .join("")}
         </tbody>
     `;
 
     tableContainer.appendChild(table);
-    document.getElementById('results-container').appendChild(tableContainer);
+    document.getElementById("results-container").appendChild(tableContainer);
 
-    const dateCells = document.querySelectorAll('.clickable-date');
-    dateCells.forEach(cell => {
-        cell.addEventListener('click', (event) => {
-            const index = event.target.dataset.index;
-            if (index !== undefined) {
-                fetchAndDisplayDailyDetails(dailyData[index]);
-            }
-        });
+    const dateCells = document.querySelectorAll(".clickable-date");
+    dateCells.forEach((cell) => {
+      cell.addEventListener("click", (event) => {
+        const index = event.target.dataset.index;
+        if (index !== undefined) {
+          fetchAndDisplayDailyDetails(dailyData[index]);
+        }
+      });
     });
-}
-
+  }
 
   function fetchAndDisplayDailyDetails(dayData) {
-    const lat = 34.0223519
-    const lon = -118.285117
+    const lat = 34.0223519;
+    const lon = -118.285117;
     // const lat = dayData.latitude;
     // const lon = dayData.longitude;
 
@@ -327,11 +340,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function displayDailyWeatherDetails(data, startTime) {
-    console.log("data", data)
-    console.log("startTime", startTime)
+    console.log("data", data);
+    console.log("startTime", startTime);
 
     const weatherDetails = data.timelines[0].intervals[0].values;
-    console.log(weatherDetails)
+    console.log(weatherDetails);
 
     const date = new Date(startTime).toLocaleDateString("en-US", {
       weekday: "long",
@@ -340,7 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
       year: "numeric",
     });
 
-    console.log("date", date)
+    console.log("date", date);
 
     const { description, iconUrl } = getWeatherDescriptionAndIcon(
       weatherDetails.weatherCode
