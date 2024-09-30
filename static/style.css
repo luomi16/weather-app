@@ -103,9 +103,56 @@ button {
   background-color: #cc8500;
 }
 
+/* Toggle part */
+
+.weather-charts {
+  text-align: center;
+  margin-top: 20px;
+  padding-bottom: 10px;
+}
+
+#toggle-charts {
+  font-size: 1.2em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  color: #333;
+}
+
+#toggle-charts:hover {
+  color: #000;
+}
+
+#toggle-charts::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #d3d3d3;
+  margin: 10px 0;
+}
+
+#charts-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.weather-charts-content {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+
+/* Result container */
+
 #results-container {
   margin-top: 20px;
 }
+
+/* Weather card */
 
 .weather-card {
   display: flex;
@@ -231,7 +278,7 @@ button {
 
 /* Detailed weather details */
 
-.daily-weather-card {
+.detailed-daily-weather-card {
   background: linear-gradient(to bottom, #e3e3e3, #a1a1f2);
   padding: 20px;
   border-radius: 10px;
@@ -240,24 +287,30 @@ button {
   margin-top: 30px;
 }
 
-.weather-header {
+.detailed-weather-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: #2e468a;
 }
 
-.weather-icon-image {
-  width: 60px;
-  height: 60px;
+.basic-info p {
+  font-size: 2em;
 }
 
-.temperature {
+.detailed-weather-icon-image {
+  width: 160px;
+  height: 160px;
+}
+
+.detailed-temperature {
   font-size: 2.5em;
   font-weight: bold;
   margin: 10px 0;
 }
 
 .additional-details {
+  align-items: center;
   margin-top: 20px;
   font-size: 1em;
   color: #333;

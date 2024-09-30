@@ -129,8 +129,12 @@ document.addEventListener("DOMContentLoaded", () => {
       (timeline) => timeline.timestep === "1d"
     );
 
+    const lat = data.latitude;
+    const lon = data.longitude;
+    console.log(lat, lon)
+
     if (dailyTimeline && dailyTimeline.intervals.length > 0) {
-      createDailyWeatherTable(dailyTimeline.intervals);
+      createDailyWeatherTable(lat, lon, dailyTimeline.intervals);
     } else {
       resultsContainer.innerHTML +=
         "<p>Daily weather data is not available.</p>";
@@ -147,19 +151,19 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     resultsContainer.appendChild(chartsContainer);
 
-    initializeCharts(data);
-
     const toggleButton = document.getElementById("toggle-charts");
     const chartsDiv = document.getElementById("charts-container");
     toggleButton.addEventListener("click", () => {
       if (chartsDiv.style.display === "none") {
         chartsDiv.style.display = "block";
-        toggleButton.textContent = "▲ Hide Weather Charts";
+        toggleButton.textContent = "▲ Weather Charts";
       } else {
         chartsDiv.style.display = "none";
-        toggleButton.textContent = "▼ Show Weather Charts";
+        toggleButton.textContent = "▼ Weather Charts";
       }
     });
+
+    initializeCharts(data);
   }
 
   function getWeatherDescriptionAndIcon(weatherCode) {
@@ -252,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return card;
   }
 
-  function createDailyWeatherTable(dailyData) {
+  function createDailyWeatherTable(lat, lon, dailyData) {
     const tableContainer = document.createElement("div");
     tableContainer.className = "weather-table-container";
 
@@ -296,10 +300,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return `
                         <tr>
                             <td class="clickable-date" data-index="${index}">${date}</td>
-                            <td>${weatherIcon}</td>
-                            <td>${day.values.temperatureMax.toFixed(2)}</td>
-                            <td>${day.values.temperatureMin.toFixed(2)}</td>
-                            <td>${day.values.windSpeed.toFixed(2)}</td>
+                            <td class="clickable-date" data-index="${index}">${weatherIcon}</td>
+                            <td class="clickable-date" data-index="${index}">${day.values.temperatureMax.toFixed(2)}</td>
+                            <td class="clickable-date" data-index="${index}">${day.values.temperatureMin.toFixed(2)}</td>
+                            <td class="clickable-date" data-index="${index}">${day.values.windSpeed.toFixed(2)}</td>
                         </tr>
                     `;
               })
@@ -315,18 +319,14 @@ document.addEventListener("DOMContentLoaded", () => {
       cell.addEventListener("click", (event) => {
         const index = event.target.dataset.index;
         if (index !== undefined) {
-          fetchAndDisplayDailyDetails(dailyData[index]);
+          fetchAndDisplayDailyDetails(lat, lon, dailyData[index]);
         }
       });
     });
   }
 
-  function fetchAndDisplayDailyDetails(dayData) {
-    console.log("dayData", dayData)
-    const lat = 34.0223519;
-    const lon = -118.285117;
-    // const lat = dayData.latitude;
-    // const lon = dayData.longitude;
+  function fetchAndDisplayDailyDetails(lat, lon, dayData) {
+    console.log(lat, lon);
 
     fetch(`/detailed-weather?lat=${lat}&lon=${lon}`)
       .then((response) => response.json())
@@ -336,6 +336,17 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch((error) => {
         console.error("Error fetching daily weather details:", error);
       });
+  }
+
+  function formatTime(isoString) {
+    if (!isoString) return "N/A";
+  
+    const date = new Date(isoString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true
+    });
   }
 
   function displayDailyWeatherDetails(data, startTime) {
@@ -358,33 +369,38 @@ document.addEventListener("DOMContentLoaded", () => {
       weatherDetails.weatherCode
     );
 
+    const sunriseTimeFormatted = formatTime(weatherDetails.sunriseTime);
+    const sunsetTimeFormatted = formatTime(weatherDetails.sunsetTime);
+
     const detailsContainer = document.getElementById(
       "detailed-weather-container"
     );
+    // const detailsContainer = document.getElementById("results-container");
+
     detailsContainer.innerHTML = `
-        <div class="daily-weather-card">
-            <h2>Daily Weather Details</h2>
-            <div class="weather-header">
-                <p>${date}</p>
-                <img src="${iconUrl}" alt="${description}" class="weather-icon-image">
-                <p>${description}</p>
+        <div class="detailed-daily-weather-card">
+            <div class="detailed-weather-header">
+                <div class="basic-info">
+                    <p>${date}</p>
+                    <p>${description}</p>
+                    <div class="detailed-temperature">
+                        ${weatherDetails.temperatureMax.toFixed(
+                          1
+                        )}°F / ${weatherDetails.temperatureMin.toFixed(1)}°F
+                    </div>
+                </div>
+                <img src="${iconUrl}" alt="${description}" class="detailed-weather-icon-image">
             </div>
-            <div class="temperature">
-                ${weatherDetails.temperatureMax.toFixed(
-                  1
-                )}°F / ${weatherDetails.temperatureMin.toFixed(1)}°F
-            </div>
+            
             <div class="additional-details">
                 <p>Precipitation: ${weatherDetails.precipitation || "N/A"}</p>
                 <p>Chance of Rain: ${
-                  weatherDetails.precipitationProbability || "0%"
+                  weatherDetails.precipitationProbability || "0"
                 }%</p>
                 <p>Wind Speed: ${weatherDetails.windSpeed.toFixed(1)} mph</p>
                 <p>Humidity: ${weatherDetails.humidity.toFixed(1)}%</p>
                 <p>Visibility: ${weatherDetails.visibility.toFixed(2)} mi</p>
-                <p>Sunrise/Sunset: ${weatherDetails.sunriseTime || "N/A"} / ${
-      weatherDetails.sunsetTime || "N/A"
-    }</p>
+                <p>Sunrise/Sunset: ${sunriseTimeFormatted} / ${sunsetTimeFormatted}</p>
             </div>
         </div>
     `;

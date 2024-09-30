@@ -1,3 +1,29 @@
+/my_flask_app
+    ├── app/
+    │   ├── __init__.py
+    │   ├── routes.py
+    │   ├── models.py
+    │   ├── forms.py
+    │   ├── templates/
+    │   │   ├── base.html
+    │   │   ├── index.html
+    │   │   └── other_templates.html
+    │   ├── static/
+    │   │   ├── css/
+    │   │   ├── js/
+    │   │   └── images/
+    │   ├── main/
+    │   │   ├── __init__.py
+    │   │   ├── routes.py
+    │   │   ├── errors.py
+    │   │   └── forms.py
+    │   └── extensions.py
+    ├── config.py
+    ├── requirements.txt
+    ├── run.py
+    └── migrations/
+
+
 # 创建虚拟环境
 
 python -m venv venv
