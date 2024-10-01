@@ -1,44 +1,8 @@
-/my_flask_app
-    ├── app/
-    │   ├── __init__.py
-    │   ├── routes.py
-    │   ├── models.py
-    │   ├── forms.py
-    │   ├── templates/
-    │   │   ├── base.html
-    │   │   ├── index.html
-    │   │   └── other_templates.html
-    │   ├── static/
-    │   │   ├── css/
-    │   │   ├── js/
-    │   │   └── images/
-    │   ├── main/
-    │   │   ├── __init__.py
-    │   │   ├── routes.py
-    │   │   ├── errors.py
-    │   │   └── forms.py
-    │   └── extensions.py
-    ├── config.py
-    ├── requirements.txt
-    ├── run.py
-    └── migrations/
-
-
-# 创建虚拟环境
-
-python -m venv venv
-
-# 激活虚拟环境
-
-# 在 Windows 上：
-
-venv\Scripts\activate
-
-# 安装所有依赖
-
-pip install -r requirements.txt
 将安装的依赖写入 requirements.txt 以便后续部署使用：
 pip freeze > requirements.txt
+
+pip install -r requirements.txt
+
 
 # Weather Search Application
 
@@ -137,10 +101,3 @@ Contributions to this project are welcome. Please fork the repository and create
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Thanks to Tomorrow.io for providing weather data
-- Thanks to Google for their Geocoding API
-- Thanks to IPInfo for their geolocation service
-- Highcharts for the charting library

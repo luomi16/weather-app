@@ -11,15 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const weatherCodeMapping = {
     1000: {
-      description: "Clear Day",
+      description: "Clear",
       iconUrl: "/static/images/Weather_icons/clear_day.svg",
     },
     1100: {
-      description: "Mostly Clear Day",
+      description: "Mostly Clear",
       iconUrl: "/static/images/Weather_icons/mostly_clear_day.svg",
     },
     1101: {
-      description: "Partly Cloudy Day",
+      description: "Partly Cloudy",
       iconUrl: "/static/images/Weather_icons/partly_cloudy_day.svg",
     },
     1102: {
@@ -104,8 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function displayResults(data) {
-    // console.log("Displaying results for:", data);
-
     if (!data || !data.data || !data.data.timelines) {
       resultsContainer.innerHTML =
         "<p>Error: You input invalid data.</p>";
@@ -141,13 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
       resultsContainer.innerHTML +=
         "<p>Daily weather data is not available.</p>";
     }
-
-    // const chartsContainer = createChartsContainer();
-    // detailsContainer.appendChild(chartsContainer);
-
-    // initializeToggleCharts(chartsContainer);
-
-    // initializeCharts(data);
   }
 
   function getWeatherDescriptionAndIcon(weatherCode) {
@@ -163,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createCurrentWeatherCard(currentData) {
-    console.log("Received currentData:", currentData);
+    // console.log("Received currentData:", currentData);
     const card = document.createElement("div");
     card.className = "weather-card";
 
@@ -316,9 +307,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function fetchAndDisplayDailyDetails(lat, lon, dayData) {
-    console.log(lat, lon);
+    // console.log(dayData);
+    resultsContainer.style.display = "none";
 
-    fetch(`/detailed-weather?lat=${lat}&lon=${lon}`)
+    fetch(`/detailed-weather?lat=${lat}&lon=${lon}&timestep=1h`)
       .then((response) => response.json())
       .then((data) => {
         displayDailyWeatherDetails(data, dayData.startTime);
@@ -326,6 +318,8 @@ document.addEventListener("DOMContentLoaded", () => {
         detailsContainer.appendChild(chartsContainer);
     
         initializeToggleCharts(chartsContainer);
+
+        // console.log("data for charts", data)
     
         initializeCharts(data);
       })
@@ -346,11 +340,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function displayDailyWeatherDetails(data, startTime) {
-    console.log("data", data);
-    console.log("startTime", startTime);
-
     const weatherDetails = data.data.timelines[0].intervals[0].values;
-    console.log("weatherDetails", weatherDetails);
+    // console.log("weatherDetails", weatherDetails);
 
     const date = new Date(startTime).toLocaleDateString("en-US", {
       weekday: "long",
@@ -358,8 +349,6 @@ document.addEventListener("DOMContentLoaded", () => {
       month: "short",
       year: "numeric",
     });
-
-    console.log("date", date);
 
     const { description, iconUrl } = getWeatherDescriptionAndIcon(
       weatherDetails.weatherCode
@@ -441,7 +430,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const dailyData = dailyTimeline.intervals;
-    const currentData = currentTimeline.intervals[0];
+    // const currentData = currentTimeline.intervals[0];
 
     Highcharts.chart("temperature-chart", {
       chart: {
@@ -486,39 +475,82 @@ document.addEventListener("DOMContentLoaded", () => {
       ],
     });
 
+    const hourlyTimeline = data.data.timelines.find(
+      (timeline) => timeline.timestep === "1h"
+    );
+  
+    if (!hourlyTimeline) {
+      console.error("Hourly timeline data is missing");
+      return;
+    }
+  
+    const hourlyData = hourlyTimeline.intervals;
+
     Highcharts.chart("hourly-chart", {
       chart: {
         zoomType: "xy",
       },
       title: {
-        text: "Daily Weather",
+        text: "Hourly Weather (For Next 5 Days)",
       },
-      xAxis: [
-        {
-          type: "datetime",
-          dateTimeLabelFormats: {
-            day: "%e %b",
-          },
+      xAxis: {
+        type: "datetime",
+        tickInterval: 36e5,
+        labels: {
+          format: "{value:%H}",
         },
-      ],
+        crosshair: true,
+      },
       yAxis: [
         {
+          // Primary yAxis for temperature
+          labels: {
+            format: "{value}°F",
+            style: {
+              color: "#FF0000",
+            },
+          },
           title: {
             text: "Temperature (°F)",
             style: {
-              color: Highcharts.getOptions().colors[1],
+              color: "#FF0000",
             },
           },
           opposite: true,
         },
         {
+          // Secondary yAxis for precipitation probability
+          gridLineWidth: 0,
           title: {
             text: "Precipitation Probability (%)",
             style: {
-              color: Highcharts.getOptions().colors[0],
+              color: "#0000FF",
+            },
+          },
+          labels: {
+            format: "{value}%",
+            style: {
+              color: "#0000FF",
             },
           },
           max: 100,
+        },
+        {
+          // Tertiary yAxis for pressure in inHg
+          gridLineWidth: 0,
+          title: {
+            text: "Pressure (inHg)",
+            style: {
+              color: "#FFA500",
+            },
+          },
+          labels: {
+            format: "{value} inHg",
+            style: {
+              color: "#FFA500"
+            },
+          },
+          opposite: false,
         },
       ],
       tooltip: {
@@ -526,29 +558,71 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       series: [
         {
-          name: "Precipitation Probability",
-          type: "column",
-          yAxis: 1,
-          data: dailyData.map((day) => [
-            new Date(day.startTime).getTime(),
-            day.values.precipitationProbability,
-          ]),
-          tooltip: {
-            valueSuffix: " %",
-          },
-        },
-        {
           name: "Temperature",
           type: "spline",
-          data: dailyData.map((day) => [
-            new Date(day.startTime).getTime(),
-            day.values.temperature,
+          yAxis: 0,
+          data: hourlyData.map((hour) => [
+            new Date(hour.startTime).getTime(),
+            hour.values.temperature,
           ]),
           tooltip: {
             valueSuffix: " °F",
           },
+          color: "#FF0000",
+          lineWidth: 2,
+          marker: {
+            enabled: false,
+          },
+        },
+        {
+          name: "Precipitation Probability",
+          type: "column",
+          yAxis: 1,
+          data: hourlyData.map((hour) => [
+            new Date(hour.startTime).getTime(),
+            hour.values.precipitationProbability,
+          ]),
+          tooltip: {
+            valueSuffix: " %",
+          },
+          color: "green",
+        },
+        {
+          name: "Pressure",
+          type: "spline",
+          yAxis: 2,
+          data: hourlyData.map((hour) => [
+            new Date(hour.startTime).getTime(),
+            hour.values.pressureSeaLevel,
+          ]),
+          tooltip: {
+            valueSuffix: " inHg",
+          },
+          color: "#FFA500",
+          dashStyle: "ShortDot",
+          lineWidth: 1,
+        },
+        {
+          name: "Wind Speed",
+          type: "windbarb",
+          data: hourlyData.map((hour) => [
+            new Date(hour.startTime).getTime(),
+            hour.values.windSpeed,
+            hour.values.windDirection,
+          ]),
+          vectorLength: 10,
+          color: "#0000FF",
+          tooltip: {
+            valueSuffix: " mph",
+          },
         },
       ],
+      legend: {
+        layout: "horizontal",
+        align: "center",
+        verticalAlign: "bottom",
+      },
     });
+        
   }
 });

@@ -46,20 +46,13 @@ def search():
             lat = geocode_response['results'][0]['geometry']['location']['lat']
             lon = geocode_response['results'][0]['geometry']['location']['lng']
             location = geocode_response['results'][0]['formatted_address']
-            # print(lat, lon)
-            # 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
-
-        # lat = 34.0223519
-        # lon = -118.285117l
     
         # Call Tomorrow.io API
-        weather_url = f"https://api.tomorrow.io/v4/timelines?location={lat},{lon}&fields=temperature,temperatureApparent,temperatureMin,temperatureMax,windSpeed,windDirection,humidity,pressureSeaLevel,uvIndex,weatherCode,precipitationProbability,precipitationType,sunriseTime,sunsetTime,visibility,moonPhase,cloudCover&timesteps=current,1d&units=imperial&apikey={TOMORROW_API_KEY}"
+        weather_url = f"https://api.tomorrow.io/v4/timelines?location={lat},{lon}&fields=temperature,temperatureApparent,temperatureMin,temperatureMax,windSpeed,windDirection,humidity,pressureSeaLevel,uvIndex,weatherCode,precipitationProbability,precipitationType,sunriseTime,sunsetTime,visibility,moonPhase,cloudCover&timesteps=current,1d,1h&units=imperial&apikey={TOMORROW_API_KEY}"
         weather_response = requests.get(weather_url).json()
         weather_response['location'] = location
         weather_response['latitude'] = lat
         weather_response['longitude'] = lon
-
-        # print("weather_response", weather_response)
         
         return jsonify(weather_response)
     
@@ -72,11 +65,8 @@ def detailed_weather():
     lat = request.args.get('lat')
     lon = request.args.get('lon')
 
-    weather_url = f"https://api.tomorrow.io/v4/timelines?location={lat},{lon}&fields=temperature,temperatureApparent,temperatureMin,temperatureMax,windSpeed,windDirection,humidity,pressureSeaLevel,uvIndex,weatherCode,precipitationProbability,precipitationType,sunriseTime,sunsetTime,visibility,moonPhase,cloudCover&timesteps=current,1d&units=imperial&apikey={TOMORROW_API_KEY}"
+    weather_url = f"https://api.tomorrow.io/v4/timelines?location={lat},{lon}&fields=temperature,temperatureApparent,temperatureMin,temperatureMax,windSpeed,windDirection,humidity,pressureSeaLevel,uvIndex,weatherCode,precipitationProbability,precipitationType,sunriseTime,sunsetTime,visibility,moonPhase,cloudCover&timesteps=current,1d,1h&units=imperial&apikey={TOMORROW_API_KEY}"
     weather_response = requests.get(weather_url).json()
-
-    print("weather_response for detailed_weather", weather_response)
-
     return jsonify(weather_response)
 
 if __name__ == '__main__':
