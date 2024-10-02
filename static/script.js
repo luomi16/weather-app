@@ -95,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     form.reset();
     resultsContainer.innerHTML = "";
     detailsContainer.innerHTML = "";
+    location.reload();
   });
 
   useCurrentLocationCheckbox.addEventListener("change", () => {
