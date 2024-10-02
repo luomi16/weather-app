@@ -106,12 +106,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function displayResults(data) {
     if (!data || !data.data || !data.data.timelines) {
-      resultsContainer.innerHTML =
-        "<p>Error: You input invalid data.</p>";
+      resultsContainer.innerHTML = "<p>Error: 500 (INTERNAL SERVER ERROR)</p>";
       return;
     }
 
-    resultsContainer.innerHTML = '';
+    resultsContainer.innerHTML = "";
 
     const currentTimeline = data.data.timelines.find(
       (timeline) => timeline.timestep === "current"
@@ -155,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createCurrentWeatherCard(currentData) {
-    // console.log("Received currentData:", currentData);
+    console.log("Received currentData:", currentData);
     const card = document.createElement("div");
     card.className = "weather-card";
 
@@ -317,11 +316,11 @@ document.addEventListener("DOMContentLoaded", () => {
         displayDailyWeatherDetails(data, dayData.startTime);
         const chartsContainer = createChartsContainer();
         detailsContainer.appendChild(chartsContainer);
-    
+
         initializeToggleCharts(chartsContainer);
 
         // console.log("data for charts", data)
-    
+
         initializeCharts(data);
       })
       .catch((error) => {
@@ -472,6 +471,24 @@ document.addEventListener("DOMContentLoaded", () => {
             day.values.temperatureMin,
             day.values.temperatureMax,
           ]),
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 1,
+            },
+            stops: [
+              [0, "rgba(255, 165, 0, 0.3)"],
+              [1, "rgba(135, 206, 235, 0.5)"],
+            ],
+          },
+          lineColor: "#FFA500",
+          marker: {
+            enabled: true,
+            radius: 4,
+            fillColor: "#00aaff",
+          },
         },
       ],
     });
@@ -479,12 +496,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const hourlyTimeline = data.data.timelines.find(
       (timeline) => timeline.timestep === "1h"
     );
-  
+
     if (!hourlyTimeline) {
       console.error("Hourly timeline data is missing");
       return;
     }
-  
+
     const hourlyData = hourlyTimeline.intervals;
 
     Highcharts.chart("hourly-chart", {
@@ -494,64 +511,53 @@ document.addEventListener("DOMContentLoaded", () => {
       title: {
         text: "Hourly Weather (For Next 5 Days)",
       },
-      xAxis: {
-        type: "datetime",
-        tickInterval: 36e5,
-        labels: {
-          format: "{value:%H}",
+      xAxis: [
+        // {
+        //   type: "datetime",
+        //   labels: {
+        //     format: "{value: %A %b %e}",
+        //     step: 2,
+        //   },
+        //   opposite: true,
+        // },
+        {
+          type: "datetime",
+          tickInterval: 36e5,
+          labels: {
+            format: "{value:%H}",
+            step: 6,
+          },
+          crosshair: true,
+          // opposite: false,
         },
-        crosshair: true,
-      },
+      ],
       yAxis: [
         {
-          // Primary yAxis for temperature
-          labels: {
-            format: "{value}°F",
-            style: {
-              color: "#FF0000",
-            },
-          },
           title: {
             text: "Temperature (°F)",
-            style: {
-              color: "#FF0000",
-            },
-          },
-          opposite: true,
-        },
-        {
-          // Secondary yAxis for precipitation probability
-          gridLineWidth: 0,
-          title: {
-            text: "Precipitation Probability (%)",
-            style: {
-              color: "#0000FF",
-            },
           },
           labels: {
-            format: "{value}%",
-            style: {
-              color: "#0000FF",
-            },
+            format: "{value}°",
           },
+          min: 0,
           max: 100,
+          gridLineColor: "#e0e0e0",
+          gridLineWidth: 1,
         },
         {
-          // Tertiary yAxis for pressure in inHg
-          gridLineWidth: 0,
           title: {
             text: "Pressure (inHg)",
+          },
+          labels: {
+            format: "{value}",
             style: {
               color: "#FFA500",
             },
           },
-          labels: {
-            format: "{value} inHg",
-            style: {
-              color: "#FFA500"
-            },
-          },
-          opposite: false,
+          opposite: true,
+          min: 20,
+          max: 40,
+          gridLineWidth: 0,
         },
       ],
       tooltip: {
@@ -559,39 +565,47 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       series: [
         {
+          name: "Humidity",
+          type: "column",
+          yAxis: 0,
+          data: hourlyData.map((hour) => [
+            new Date(hour.startTime).getTime(),
+            hour.values.humidity,
+          ]),
+          tooltip: {
+            valueSuffix: " %",
+          },
+          color: "rgba(135, 206, 235, 0.5)",
+          borderColor: "#00aaff",
+          borderWidth: 1,
+          dataLabels: {
+            enabled: true,
+            formatter: function() {
+              return this.point.index % 1 === 0 ? Math.round(this.y): '';
+            },
+            style: {
+              color: "#000000",
+            },
+          },
+        },
+        {
           name: "Temperature",
           type: "spline",
           yAxis: 0,
           data: hourlyData.map((hour) => [
             new Date(hour.startTime).getTime(),
-            hour.values.temperature,
+            Math.round(hour.values.temperature),
           ]),
           tooltip: {
             valueSuffix: " °F",
           },
           color: "#FF0000",
-          lineWidth: 2,
-          marker: {
-            enabled: false,
-          },
-        },
-        {
-          name: "Precipitation Probability",
-          type: "column",
-          yAxis: 1,
-          data: hourlyData.map((hour) => [
-            new Date(hour.startTime).getTime(),
-            hour.values.precipitationProbability,
-          ]),
-          tooltip: {
-            valueSuffix: " %",
-          },
-          color: "green",
+          lineWidth: 1,
         },
         {
           name: "Pressure",
           type: "spline",
-          yAxis: 2,
+          yAxis: 1,
           data: hourlyData.map((hour) => [
             new Date(hour.startTime).getTime(),
             hour.values.pressureSeaLevel,
@@ -600,17 +614,23 @@ document.addEventListener("DOMContentLoaded", () => {
             valueSuffix: " inHg",
           },
           color: "#FFA500",
-          dashStyle: "ShortDot",
+          // dashStyle: "ShortDot",
           lineWidth: 1,
         },
         {
           name: "Wind Speed",
           type: "windbarb",
-          data: hourlyData.map((hour) => [
-            new Date(hour.startTime).getTime(),
-            hour.values.windSpeed,
-            hour.values.windDirection,
-          ]),
+          data: hourlyData
+            .map((hour, index) => {
+              return index % 2 === 0
+                ? [
+                    new Date(hour.startTime).getTime(),
+                    hour.values.windSpeed,
+                    hour.values.windDirection,
+                  ]
+                : null;
+            })
+            .filter(Boolean),
           vectorLength: 10,
           color: "#0000FF",
           tooltip: {
@@ -624,6 +644,5 @@ document.addEventListener("DOMContentLoaded", () => {
         verticalAlign: "bottom",
       },
     });
-        
   }
 });
