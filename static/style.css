@@ -159,47 +159,46 @@ button {
   flex-direction: column;
   background-color: #f5f5f5;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+}
+
+.weather-location {
+  text-align: left;
+  font-size: 2.2em;
+  color: #666;
+  margin-bottom: 20px;
 }
 
 .weather-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
 }
 
 .weather-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
 }
 
 .weather-icon-image {
-  width: 100px;
-  height: 100px;
-  margin-left: 10px;
+  width: 200px;
+  height: 200px;
+  margin-left: 40px;
+  margin-bottom: 20px;
 }
 
 .weather-description {
-  font-size: 1.1em;
+  font-size: 2em;
   color: #888;
-  margin-top: 0;
 }
 
 .weather-header p {
-  font-size: 4em;
+  font-size: 8em;
   color: #666;
 }
 
-.weather-location {
-  text-align: left;
-  font-size: 1.2em;
-  color: #666;
-  margin-bottom: 20px;
-}
+/* weather details */
 
 .weather-details {
   display: flex;
@@ -243,7 +242,7 @@ button {
   align-items: center;
 }
 
-.weather-icon {
+.daily-weather-icon {
   width: 30px;
   height: 30px;
   margin-right: 10px;
@@ -279,17 +278,15 @@ button {
 /* Detailed weather details */
 
 .detailed-daily-weather-card {
-  background: linear-gradient(to bottom, #e3e3e3, #a1a1f2);
+  background: linear-gradient(to bottom, #ffffff, #082f66);
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: left;
   margin-top: 30px;
 }
 
 .detailed-weather-header {
   display: flex;
-  align-items: center;
+  text-align: left;
+  /* align-items: center; */
   justify-content: space-between;
   color: #2e468a;
 }
@@ -301,6 +298,7 @@ button {
 .detailed-weather-icon-image {
   width: 160px;
   height: 160px;
+  margin-right: 10px;
 }
 
 .detailed-temperature {
@@ -310,12 +308,12 @@ button {
 }
 
 .additional-details {
-  align-items: center;
   margin-top: 20px;
-  font-size: 1em;
-  color: #333;
+  font-size: 2em;
+  color: #f6f6f6;
+  text-align: center;
 }
 
 .additional-details p {
-  margin: 5px 0;
+  margin: 7px 0;
 }

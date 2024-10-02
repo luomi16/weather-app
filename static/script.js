@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
   clearButton.addEventListener("click", () => {
     form.reset();
     resultsContainer.innerHTML = "";
+    detailsContainer.innerHTML = "";
   });
 
   useCurrentLocationCheckbox.addEventListener("change", () => {
@@ -267,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const weatherIcon = `
                         <div class="weather-status">
-                            <img class="weather-icon" src="${iconUrl}" alt="${description}">
+                            <img class="daily-weather-icon" src="${iconUrl}" alt="${description}">
                             <p>${description}</p>
                         </div>
                     `;
