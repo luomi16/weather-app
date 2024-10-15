@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="weather-item">
                 <span>Pressure</span>
-                <img src="/static/images/icons/pressure.png" alt="Pressure" />
+                <img src="/static/images/icons/Pressure.png" alt="Pressure" />
                 <p class="weather-value">${
                   values.pressureSeaLevel
                     ? values.pressureSeaLevel + "inHg"
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="weather-item">
                 <span>Wind Speed</span>
-                <img src="/static/images/icons/wind_speed.png" alt="Wind Speed" />
+                <img src="/static/images/icons/Wind_Speed.png" alt="Wind Speed" />
                 <p class="weather-value">${
                   values.windSpeed
                     ? values.windSpeed.toFixed(1) + " mph"
@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="weather-item">
                 <span>Visibility</span>
-                <img src="/static/images/icons/visibility.png" alt="Visibility" />
+                <img src="/static/images/icons/Visibility.png" alt="Visibility" />
                 <p class="weather-value">${
                   values.visibility
                     ? values.visibility.toFixed(2) + " mi"
@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="weather-item">
                 <span>Cloud Cover</span>
-                <img src="/static/images/icons/cloud_cover.png" alt="Cloud Cover" />
+                <img src="/static/images/icons/Cloud_Cover.png" alt="Cloud Cover" />
                 <p class="weather-value">${
                   values.cloudCover ? values.cloudCover + "%" : "N/A"
                 }</p>
