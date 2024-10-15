@@ -20,6 +20,24 @@ IPINFO_TOKEN = os.environ.get('IPINFO_TOKEN')
 def index():
     return render_template('index.html')
 
+# sample additional link
+@app.route('/api/search', methods=['get'])
+def api_search():
+    try:
+        lat = 39.9524 
+        lon = -75.1636
+        weather_url = f"https://api.tomorrow.io/v4/timelines?location={lat},{lon}&fields=temperature,temperatureApparent,temperatureMin,temperatureMax,windSpeed,windDirection,humidity,pressureSeaLevel,uvIndex,weatherCode,precipitationProbability,precipitationType,sunriseTime,sunsetTime,visibility,moonPhase,cloudCover&timesteps=current,1d,1h&units=imperial&apikey={TOMORROW_API_KEY}"
+        weather_response = requests.get(weather_url).json()
+        
+        weather_response['latitude'] = lat
+        weather_response['longitude'] = lon
+        
+        return jsonify(weather_response)
+    
+    except Exception as e:
+        app.logger.error(f"Error occurred: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/search', methods=['POST'])
 def search():
     try:
@@ -46,6 +64,7 @@ def search():
             lat = geocode_response['results'][0]['geometry']['location']['lat']
             lon = geocode_response['results'][0]['geometry']['location']['lng']
             location = geocode_response['results'][0]['formatted_address']
+            print(lat, lon)
     
         # Call Tomorrow.io API
         weather_url = f"https://api.tomorrow.io/v4/timelines?location={lat},{lon}&fields=temperature,temperatureApparent,temperatureMin,temperatureMax,windSpeed,windDirection,humidity,pressureSeaLevel,uvIndex,weatherCode,precipitationProbability,precipitationType,sunriseTime,sunsetTime,visibility,moonPhase,cloudCover&timesteps=current,1d,1h&units=imperial&apikey={TOMORROW_API_KEY}"
