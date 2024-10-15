@@ -75,4 +75,11 @@ jobs:
         with:
           app-name: 'msdocs-python-flask-webapp-quickstart-123'
           slot-name: 'Production'
+
+      - name: Install dependencies
+        run: |
+          mkdir -p ~/.cache/pip
+          python -m pip install --upgrade pip
+          pip install --cache-dir ~/.cache/pip -r requirements.txt
+
           
