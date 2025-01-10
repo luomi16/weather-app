@@ -50,13 +50,10 @@ def search():
             location = f"{ip_info['city']}, {ip_info['region']}, {ip_info['country']}"
         else:
             # Use Google Geocoding API
-            # address = f"{data['street']}, {data['city']}, {data['state']}"
             address = f"{data['street'].strip()}, {data['city'].strip()}, {data['state'].strip()}"
             encoded_address = quote_plus(address)
             geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={encoded_address}&key={GOOGLE_API_KEY}"
-            # geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={GOOGLE_API_KEY}"
             geocode_response = requests.get(geocode_url).json()
-            # print("address", address)
             
             if geocode_response['status'] != 'OK':
                 return jsonify({'error': 'Unable to find location'}), 400
@@ -64,7 +61,6 @@ def search():
             lat = geocode_response['results'][0]['geometry']['location']['lat']
             lon = geocode_response['results'][0]['geometry']['location']['lng']
             location = geocode_response['results'][0]['formatted_address']
-            print(lat, lon)
     
         # Call Tomorrow.io API
         weather_url = f"https://api.tomorrow.io/v4/timelines?location={lat},{lon}&fields=temperature,temperatureApparent,temperatureMin,temperatureMax,windSpeed,windDirection,humidity,pressureSeaLevel,uvIndex,weatherCode,precipitationProbability,precipitationType,sunriseTime,sunsetTime,visibility,moonPhase,cloudCover&timesteps=current,1d,1h&units=imperial&apikey={TOMORROW_API_KEY}"

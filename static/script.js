@@ -30,13 +30,45 @@ document.addEventListener("DOMContentLoaded", () => {
       description: "Cloudy",
       iconUrl: "/static/images/Weather_icons/cloudy.svg",
     },
+    2000: {
+      description: "Fog",
+      iconUrl: "/static/images/Weather_icons/fog.svg",
+    },
+    2100: {
+      description: "Light Fog",
+      iconUrl: "/static/images/Weather_icons/fog_light.svg",
+    },
+    4000: {
+      description: "Drizzle",
+      iconUrl: "/static/images/Weather_icons/drizzle.svg",
+    },
+    4001: {
+      description: "Rain",
+      iconUrl: "/static/images/Weather_icons/rain.svg",
+    },
     4200: {
       description: "Light Rain",
       iconUrl: "/static/images/Weather_icons/rain_light.svg",
     },
+    4201: {
+      description: "Heavy Rain",
+      iconUrl: "/static/images/Weather_icons/rain_heavy.svg",
+    },
     5000: {
       description: "Snow",
       iconUrl: "/static/images/Weather_icons/snow.svg",
+    },
+    5001: {
+      description: "Furries",
+      iconUrl: "/static/images/Weather_icons/furries.svg",
+    },
+    5100: {
+      description: "Light Snow",
+      iconUrl: "/static/images/Weather_icons/snow_light.svg",
+    },
+    5101: {
+      description: "Heavy Snow",
+      iconUrl: "/static/images/Weather_icons/snow_heavy.svg",
     },
     6000: {
       description: "Freezing Drizzle",
@@ -46,13 +78,25 @@ document.addEventListener("DOMContentLoaded", () => {
       description: "Freezing Rain",
       iconUrl: "/static/images/Weather_icons/freezing_rain.svg",
     },
+    6200: {
+      description: "Light Freezing Rain",
+      iconUrl: "/static/images/Weather_icons/freezing_rain_light.svg",
+    },
+    6201: {
+      description: "Heavy Freezing Rain",
+      iconUrl: "/static/images/Weather_icons/freezing_rain_heavy.svg",
+    },
     7000: {
-      description: "Strong Wind",
-      iconUrl: "/static/images/Weather_icons/strong-wind.png",
+      description: "Ice Pellets",
+      iconUrl: "/static/images/Weather_icons/ice_pellets.svg",
     },
     7101: {
-      description: "Wind",
-      iconUrl: "/static/images/Weather_icons/wind.png",
+      description: "Heavy Ice Pellets",
+      iconUrl: "/static/images/Weather_icons/ice_pellets_heavy.svg",
+    },
+    7102: {
+      description: "Light Ice Pellets",
+      iconUrl: "/static/images/Weather_icons/ice_pellets_light.svg",
     },
     8000: {
       description: "Thunderstorm",
@@ -155,7 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createCurrentWeatherCard(currentData) {
-    console.log("Received currentData:", currentData);
     const card = document.createElement("div");
     card.className = "weather-card";
 

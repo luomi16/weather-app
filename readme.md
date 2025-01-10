@@ -43,7 +43,7 @@ This project is a web-based weather search application that allows users to retr
 ### Steps to Run the Application
 1. Clone the repository:
    ```bash
-   git clone weather-app
+   git clone https://github.com/luomi16/weather-app.git
    cd weather-app
    ```
 
@@ -61,7 +61,7 @@ This project is a web-based weather search application that allows users to retr
 
 4. Run the Flask application:
    ```bash
-   python main.py
+   python app.py
    ```
 
 5. Open the application in a web browser:
@@ -71,7 +71,7 @@ This project is a web-based weather search application that allows users to retr
 
 ## Usage
 1. Navigate to the application URL.
-2. Input search details (Street, City, State) or select the "Use My Location" checkbox.
+2. Input search details (Street, City, State) or select the "Auto-detect your location" checkbox.
 3. View weather results in the card and table format.
 4. Explore detailed weather summaries and charts by clicking on specific dates.
 
@@ -79,17 +79,4 @@ This project is a web-based weather search application that allows users to retr
 - [Tomorrow.io API](https://docs.tomorrow.io/reference/welcome)
 - [Google Maps Geocoding API](https://developers.google.com/maps/documentation/geocoding/start)
 - [IPinfo API](https://ipinfo.io/)
-
-## Important Notes
-- All API calls to Tomorrow.io must go through the Python backend.
-- Ensure the application's appearance matches the provided reference designs and videos.
-- Deploy the entire application on a single cloud platform. GitHub Pages should not be used for hosting.
-
-## Submission Guidelines
-1. Host your files on GCP, AWS, or Azure and provide the live link.
-2. Submit a ZIP file containing:
-   - Frontend files (HTML, CSS, JS).
-   - Backend files (Python scripts, `requirements.txt`, `.yaml`).
-3. Ensure the project follows the structure outlined in the documentation.
-
 ---
